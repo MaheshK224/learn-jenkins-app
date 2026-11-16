@@ -22,7 +22,10 @@ pipeline {
             }
         }
         stage('Test'){
-            echo "Test state started"
+            steps{
+                echo "Test state started"
+            }
+            
         }
     }
 }
