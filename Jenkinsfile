@@ -2,51 +2,51 @@ pipeline {
     agent any
 
     stages {
-        // stage('Build') {
-        //     agent{
-        //         docker{
-        //             image 'node:20-alpine'
-        //             reuseNode true
-        //         }
-        //     }
-        //     steps {
-        //         echo 'Hello World!!!'
-        //         sh '''
-        //             ls -la
-        //             node --version
-        //             npm --version
-        //             npm ci
-        //             npm run build
-        //             ls -la
-        //         '''
-        //     }
-        // }
-        stage('Test'){
+        stage('Build') {
             agent{
                 docker{
                     image 'node:20-alpine'
                     reuseNode true
                 }
             }
-            steps{
-                echo "Test state started"
+            steps {
+                echo 'Hello World!!!'
                 sh '''
-                #test -f build/index.html
-                npm test
+                    ls -la
+                    node --version
+                    npm --version
+                    npm ci
+                    npm run build
+                    ls -la
                 '''
             }
-            
         }
+        // stage('Test'){
+        //     agent{
+        //         docker{
+        //             image 'node:20-alpine'
+        //             reuseNode true
+        //         }
+        //     }
+        //     steps{
+        //         echo "Test state started"
+        //         sh '''
+        //         #test -f build/index.html
+        //         npm test
+        //         '''
+        //     }
+            
+        // }
         stage('E2E'){
             agent{
                 docker{
-                    image 'mcr.microsoft.com/playwright:v1.64.1-noble'
+                    image 'mcr.microsoft.com/playwright:v1.64.1-jammy'
                     reuseNode true
                 }
             }
             steps{
                 sh '''
-                npm install 
+                npm ci 
                 node_modules/.bin/serve -s build &
                 sleep 10
                 npx playwright test
@@ -56,9 +56,9 @@ pipeline {
         }
 
     }
-    post{
-            always{
-                junit 'jest-results/junit.xml'
-            }
-        }
+    // post{
+    //         always{
+    //             junit 'jest-results/junit.xml'
+    //         }
+    //     }
 }
